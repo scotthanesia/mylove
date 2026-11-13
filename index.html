@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Our Little World ♡</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;1,500;1,600&display=swap');
+:root{--ink:#493a43;--muted:#8d7783;--rose:#d98da8;--pink:#f6dce6;--cream:#fffaf7;--lav:#e9e2f3;--line:#f0e4e9}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;color:var(--ink);font-family:'DM Sans',sans-serif;background:radial-gradient(circle at 12% 15%,#fff 0,transparent 30%),linear-gradient(135deg,#fff9f6,#f9edf3 55%,#f2edf8);min-height:100vh;overflow-x:hidden}
+button,input{font:inherit}button{cursor:pointer;border:0}
+#app{min-height:100vh}.screen{display:none;min-height:100vh;padding:34px 20px;align-items:center;justify-content:center;position:relative;overflow:hidden}.screen.active{display:flex;animation:fade .65s ease both}
+@keyframes fade{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@keyframes float{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-12px) rotate(3deg)}}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+@keyframes drift{from{transform:translateY(105vh) rotate(0)}to{transform:translateY(-15vh) rotate(320deg)}}
+@keyframes bloom{0%{transform:scale(.1) rotate(-25deg);opacity:0}70%{transform:scale(1.08)}100%{transform:scale(1);opacity:1}}
+.ambient{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0}.floaty{position:absolute;bottom:-50px;color:#d99bb2;opacity:.3;animation:drift linear infinite}
+.card{width:min(100%,560px);padding:clamp(28px,5vw,52px);background:rgba(255,255,255,.72);border:1px solid rgba(255,255,255,.9);border-radius:30px;box-shadow:0 24px 80px rgba(125,82,106,.12);backdrop-filter:blur(16px);text-align:center;position:relative;z-index:1}
+.eyebrow{text-transform:uppercase;letter-spacing:.22em;font-size:.68rem;font-weight:700;color:#b77e98}
+h1,h2{font-family:'Playfair Display',serif;font-weight:500;margin:10px 0 14px;line-height:1.12}h1{font-size:clamp(2.5rem,7vw,4.2rem)}h2{font-size:clamp(2rem,5vw,3rem)}
+p{line-height:1.8;color:var(--muted)}.tiny{font-size:.82rem}
+.primary,.secondary{border-radius:999px;padding:14px 25px;font-weight:700;transition:.25s;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.primary{background:linear-gradient(120deg,#d98da8,#c98ab7);color:white;box-shadow:0 10px 25px #d98da844}.primary:hover{transform:translateY(-3px);box-shadow:0 14px 30px #d98da866}
+.secondary{background:#fff;color:#9d7187;border:1px solid var(--line)}.secondary:hover{background:#fff4f8}
+.actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:25px}
+.input-wrap{display:flex;gap:8px;margin:25px auto 10px;max-width:370px}
+input[type=password],input[type=text]{width:100%;border:1px solid #eedde5;border-radius:16px;padding:15px 17px;background:#fffafc;outline:none;color:var(--ink);text-align:center}
+input:focus{border-color:#d99bb2;box-shadow:0 0 0 4px #f8e8ef}
+.message{min-height:24px;font-size:.85rem;color:#b56f8d;margin-top:10px}
+.heart{font-size:2.2rem;display:inline-block;animation:pulse 2s infinite}
+.progress{display:flex;justify-content:center;gap:7px;margin:22px 0}.dot{height:7px;width:23px;border-radius:99px;background:#f0e1e8}.dot.on{background:#d58ca8}
+.question{font-family:'Playfair Display',serif;font-size:clamp(1.5rem,4vw,2.2rem);margin:24px 0}
+.choice{min-width:135px;background:#fff;border:1px solid #f0dce5;color:#a66f88;border-radius:16px;padding:14px 20px;font-weight:700;transition:.2s}.choice:hover{transform:translateY(-3px);background:#fff2f7}
+.envelope{width:190px;height:132px;margin:28px auto 18px;position:relative;background:#e9a9bf;border-radius:12px;cursor:pointer;box-shadow:0 14px 30px #c7839b33;display:grid;place-items:center;transition:.3s}
+.envelope:before{content:"";position:absolute;inset:0;background:#f4c5d4;clip-path:polygon(0 0,50% 58%,100% 0);border-radius:12px 12px 0 0;transform-origin:top;transition:.5s;z-index:2}
+.envelope:after{content:"";position:absolute;bottom:0;left:0;border-left:95px solid #df9db5;border-right:95px solid #e6a8bd;border-top:70px solid transparent;border-radius:0 0 12px 12px}
+.envelope span{position:relative;z-index:3;font-size:2rem}.envelope.open:before{transform:rotateX(180deg)}
+.letter{display:none;background:#fffdfb;border:1px solid #f2e5e9;border-radius:18px;padding:22px;margin-top:18px;text-align:left;animation:fade .5s ease}.letter.show{display:block}
+.reason-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:25px}.reason{min-height:115px;background:linear-gradient(145deg,#fff,#fff4f7);border:1px solid #f3e4ea;border-radius:18px;padding:18px 12px;color:#9d7187;font-weight:600;transition:.3s}.reason:hover{transform:translateY(-4px) rotate(-1deg);box-shadow:0 12px 25px #d5a4b522}.reason small{display:block;margin-top:9px;font-weight:400;color:#a88c9a}
+.gallery{width:min(100%,980px);position:relative;z-index:1;text-align:center}.photo-grid{columns:3 180px;column-gap:14px;margin:25px auto}.photo{break-inside:avoid;margin:0 0 14px;padding:8px 8px 13px;background:#fff;border-radius:14px;box-shadow:0 9px 25px #80566b17;transform:rotate(var(--r));transition:.25s;cursor:pointer}.photo:hover{transform:rotate(0) scale(1.035);z-index:2}.photo img{width:100%;display:block;aspect-ratio:4/5;object-fit:cover;border-radius:9px;background:linear-gradient(135deg,#f4dce6,#e8e1f1)}.photo figcaption{font-family:'Playfair Display',serif;color:#9a7186;padding-top:9px;font-size:.95rem}
+.dashboard{width:min(100%,1100px);position:relative;z-index:1}.dash-head{text-align:center;margin-bottom:22px}.dash-layout{display:grid;grid-template-columns:1.2fr .8fr;gap:20px;align-items:stretch}.panel{background:rgba(255,255,255,.72);border:1px solid white;border-radius:26px;padding:24px;box-shadow:0 18px 55px #80566b12;backdrop-filter:blur(12px)}
+.flower-stage{min-height:440px;display:grid;place-items:center;position:relative;overflow:hidden;background:radial-gradient(circle,#fff 0,#fff8fb 48%,#f7edf5 100%)}
+
+.flower-scene{width:100%;height:490px;position:relative;display:flex;align-items:center;justify-content:center}
+.memory-snap{position:absolute;width:112px;padding:7px 7px 20px;background:#fff;border-radius:9px;box-shadow:0 9px 25px #80566b25;z-index:5;cursor:pointer;transition:.3s}
+.memory-snap img{display:block;width:100%;height:112px;object-fit:cover;border-radius:5px;background:#f4dce6}
+.memory-snap span{display:block;font-family:'Playfair Display',serif;font-size:.78rem;text-align:center;color:#9a7186;padding-top:7px}
+.memory-snap:hover{transform:scale(1.08) rotate(0deg);z-index:8}
+.snap-one{left:5%;top:7%;transform:rotate(-9deg)}.snap-two{right:5%;top:9%;transform:rotate(8deg)}
+.snap-three{left:7%;bottom:9%;transform:rotate(7deg)}.snap-four{right:6%;bottom:8%;transform:rotate(-8deg)}
+.flower{width:270px;height:270px;position:relative;animation:bloom 1.2s ease both;filter:drop-shadow(0 15px 18px #bd819533);z-index:2}
+
+.petal{position:absolute;width:98px;height:145px;left:86px;top:0;transform-origin:49px 135px;border-radius:55% 55% 42% 42%;overflow:hidden;border:5px solid #fff;box-shadow:0 5px 14px #a96b8722;background:#f2c6d6}
+.petal img{width:100%;height:100%;object-fit:cover;display:block}.petal:nth-child(1){transform:rotate(0deg)}.petal:nth-child(2){transform:rotate(60deg)}.petal:nth-child(3){transform:rotate(120deg)}.petal:nth-child(4){transform:rotate(180deg)}.petal:nth-child(5){transform:rotate(240deg)}.petal:nth-child(6){transform:rotate(300deg)}
+.flower-center{position:absolute;left:105px;top:105px;width:60px;height:60px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff2b7,#e6ad6d 65%,#c98762);border:5px solid #fff;z-index:4;box-shadow:0 4px 15px #b87b5833}
+.stem{width:9px;height:125px;background:linear-gradient(90deg,#8caa83,#b4c69d);position:absolute;left:130px;top:220px;border-radius:9px;transform:rotate(5deg);z-index:-1}.leaf{position:absolute;width:70px;height:34px;background:#a9c39e;border-radius:100% 0 100% 0;top:290px;left:135px;transform:rotate(-18deg)}
+.flower-hint{position:absolute;bottom:8px;left:0;right:0;font-size:.78rem;margin-top:12px;color:#a88c9a}
+.side-title{font-family:'Playfair Display',serif;font-size:1.55rem;margin:4px 0 10px}.stat{padding:15px 0;border-bottom:1px solid var(--line)}.stat:last-child{border:0}.stat strong{display:block;color:#986d82;font-size:1.35rem}.stat span{font-size:.78rem;color:#a58c99}
+.music{display:flex;align-items:center;gap:12px;background:#fff5f8;border-radius:16px;padding:12px;margin-top:16px}.music button{width:42px;height:42px;border-radius:50%;background:#d994ad;color:#fff}.music small{display:block;color:#a58c99}
+.modal{position:fixed;inset:0;background:#33232dbb;display:none;align-items:center;justify-content:center;padding:20px;z-index:20}.modal.show{display:flex}.modal-box{background:#fffafc;padding:15px;border-radius:20px;max-width:520px;width:100%;text-align:center}.modal-box img{width:100%;max-height:65vh;object-fit:contain;border-radius:12px}.modal-box button{margin-top:12px}
+.sparkle{position:absolute;color:#dba0b6;pointer-events:none;animation:pulse 3s infinite}
+@media(max-width:760px){.dash-layout{grid-template-columns:1fr}.flower-stage{min-height:430px}.flower-scene{height:420px}.flower{transform:scale(.78);margin:-15px}.memory-snap{width:85px;padding:5px 5px 15px}.memory-snap img{height:85px}.snap-one{left:2%;top:4%}.snap-two{right:2%;top:4%}.snap-three{left:2%;bottom:7%}.snap-four{right:2%;bottom:7%}.reason-grid{grid-template-columns:1fr 1fr}.panel{padding:20px}}
+@media(max-width:420px){.input-wrap{flex-direction:column}.reason-grid{grid-template-columns:1fr}.flower{transform:scale(.68);margin:-35px}.memory-snap{width:70px}.memory-snap img{height:70px}.flower-scene{height:390px}.flower-stage{min-height:400px}.memory-snap span{font-size:.66rem}}
+</style>
+</head>
+<body>
+<div class="ambient" id="ambient"></div>
+<div id="app">
+<section class="screen active" id="page1">
+ <div class="card">
+  <div class="heart">♡</div><div class="eyebrow">a tiny secret place</div>
+  <h1>Hey, pretty girl.</h1>
+  <p>Before you come in, tell me our callsign.<br><span class="tiny">Psst... you know this one. 🤍</span></p>
+  <div class="input-wrap"><input id="pass" type="password" placeholder="Our callsign..." autocomplete="off"><button class="secondary" id="togglePass" aria-label="Show password">◉</button></div>
+  <button class="primary" id="enter">Let me in ♡</button><div class="message" id="passMsg"></div>
+  <p class="tiny">made with love, just for you</p>
+ </div>
+</section>
+
+<section class="screen" id="page2">
+ <div class="card">
+  <div class="eyebrow">important questions</div><h2>Before we continue...</h2>
+  <p>Choose wisely, although we both know the answer. hehe.</p>
+  <div class="progress" id="progress"></div>
+  <div class="question" id="question"></div>
+  <div class="actions"><button class="choice" id="yes1">YES ♡</button><button class="choice" id="yes2">YES, OBVIOUSLY!</button></div>
+  <div class="message" id="reaction"></div>
+ </div>
+</section>
+
+<section class="screen" id="page3">
+ <div class="card">
+  <div class="eyebrow">a little note for you</div><h2>Someone's being spoiled today.</h2>
+  <p>There's a tiny letter waiting for you. Tap the envelope to open it.</p>
+  <div class="envelope" id="envelope"><span>♡</span></div>
+  <div class="letter" id="letter"><p>Hi, my love. I made this little corner of the internet just for you. It's not much compared to all the happiness you bring me, but I hope it makes you smile. Every little detail is here because I wanted you to have something that's yours — a place you can visit whenever you want a reminder that you're loved. ♡</p><p style="text-align:right">Always yours, <em>your favorite person</em>.</p></div>
+  <div class="actions"><button class="primary" id="p3next">Continue, my love →</button></div>
+ </div>
+</section>
+
+<section class="screen" id="page4">
+ <div class="card">
+  <div class="heart">🌷</div><div class="eyebrow">welcome to</div><h2>Our Little Corner</h2>
+  <p>A tiny world made of little thoughts, favorite memories, and a whole lot of love. No rush here. Take your time, look around, and remember that this place was made with you in mind.</p>
+  <p><em>In a world full of places, this is my favorite little place to find you.</em></p>
+  <div class="actions"><button class="primary" id="p4next">Let's go →</button></div>
+ </div>
+</section>
+
+<section class="screen" id="page5">
+ <div class="card" style="max-width:700px">
+  <div class="eyebrow">little things, big feelings</div><h2>Things I adore about you</h2>
+  <p>Tap each card. I could list a million, but let's start here.</p>
+  <div class="reason-grid">
+   <button class="reason">Your smile <small>It makes my day, every time.</small></button>
+   <button class="reason">Your laugh <small>My favorite sound, honestly.</small></button>
+   <button class="reason">Your voice <small>It sounds like heaven to my ears..</small></button>
+   <button class="reason">Your heart <small>The way you care means so much.</small></button>
+   <button class="reason">Your gamer side <small>You make ordinary moments fun.</small></button>
+   <button class="reason">Simply you <small>No reason needed. You're you.</small></button>
+  </div>
+  <div class="actions"><button class="primary" id="p5next">One more thing →</button></div>
+ </div>
+</section>
+
+<section class="screen" id="page6">
+ <div class="gallery">
+  <div class="eyebrow">my favorite view</div><h2>A little gallery of you</h2>
+  <p>Some pictures, a thousand reasons to smile.<br><span class="tiny">Tap any photo to see it up close.</span></p>
+  <div class="photo-grid" id="gallery">
+   <figure class="photo" style="--r:-2deg"><img src="01.jpg" alt="Add your photo 1"><figcaption>my pretty girl ♡</figcaption></figure>
+   <figure class="photo" style="--r:2deg"><img src="02.jpg" alt="Add your photo 2"><figcaption>that smile.</figcaption></figure>
+   <figure class="photo" style="--r:-1deg"><img src="03.jpg" alt="Add your photo 3"><figcaption>my favorite human</figcaption></figure>
+   <figure class="photo" style="--r:2deg"><img src="04.jpg" alt="Add your photo 4"><figcaption>pretty, always</figcaption></figure>
+   <figure class="photo" style="--r:-2deg"><img src="05.jpg" alt="Add your photo 5"><figcaption>just because ♡</figcaption></figure>
+   <figure class="photo" style="--r:1deg"><img src="06.jpg" alt="Add your photo 6"><figcaption>my love</figcaption></figure>
+  </div>
+  <p><em>I could look at you a thousand times and never get tired of it.</em></p>
+  <button class="primary" id="p6next">Unlock your little world →</button>
+ </div>
+</section>
+
+<section class="screen" id="page7">
+ <div class="dashboard">
+  <div class="dash-head"><div class="eyebrow">your very own happy place</div><h2>Welcome to your little world, my love. ♡</h2><p>A flower for you, with a little piece of you in every petal.</p></div>
+  <div class="dash-layout">
+   <div class="panel flower-stage">
+    <div class="flower-scene">
+     <div class="memory-snap snap-one" data-photo="photos/her-01.jpg"><img src="01.jpg" alt="A favorite memory"><span>my pretty girl ♡</span></div>
+     <div class="memory-snap snap-two" data-photo="photos/her-02.jpg"><img src="02.jpg" alt="A favorite memory"><span>that smile</span></div>
+     <div class="memory-snap snap-three" data-photo="photos/her-03.jpg"><img src="03.jpg" alt="A favorite memory"><span>my love</span></div>
+     <div class="memory-snap snap-four" data-photo="photos/her-04.jpg"><img src="04.jpg" alt="A favorite memory"><span>always you</span></div>
+     <div class="flower" id="flower">
+      <button class="petal" data-photo="photos/her-01.jpg" aria-label="Open photo 1"><img src="01.jpg" alt=""></button>
+      <button class="petal" data-photo="photos/her-02.jpg" aria-label="Open photo 2"><img src="02.jpg" alt=""></button>
+      <button class="petal" data-photo="photos/her-03.jpg" aria-label="Open photo 3"><img src="03.jpg" alt=""></button>
+      <button class="petal" data-photo="photos/her-04.jpg" aria-label="Open photo 4"><img src="04.jpg" alt=""></button>
+      <button class="petal" data-photo="photos/her-05.jpg" aria-label="Open photo 5"><img src="05.jpg" alt=""></button>
+      <button class="petal" data-photo="photos/her-06.jpg" aria-label="Open photo 6"><img src="06.jpg" alt=""></button>
+      <div class="flower-center"></div><div class="stem"></div><div class="leaf"></div>
+     </div>
+     <div class="flower-hint">✧ a flower made of my favorite view — you ✧</div>
+    </div>
+   </div>
+   <div class="panel">
+    <div class="side-title">A few things for you</div>
+    <p style="margin-top:0">Whenever you visit, I hope this little space reminds you how special you are to me.</p>
+    <div class="stat"><strong id="together">Our story ♡</strong><span>every day with you is a favorite</span></div>
+    <div class="stat"><strong>∞</strong><span>reasons to love you</span></div>
+    <div class="stat"><strong>One you.</strong><span>my favorite person, always</span></div>
+    <div class="music">
+     <button id="musicBtn" aria-label="Play music">▶</button>
+     <div><strong>Our little soundtrack</strong><small id="musicLabel">Pasilyo - SunKissed Lola</small></div>
+    </div>
+    <div class="actions" style="justify-content:flex-start">
+     <button class="secondary" id="revisit">Visit the gallery</button>
+     <button class="primary" id="surprise">A little surprise ✨</button>
+    </div>
+   </div>
+  </div>
+  <p style="text-align:center;margin-top:20px">Made with all my love, just for you. ♡</p>
+ </div>
+</section>
+</div>
+
+<div class="modal" id="modal"><div class="modal-box"><img id="modalImg" src="" alt="Your photo"><button class="secondary" id="closeModal">Close ♡</button></div></div>
+<audio id="bgMusic" loop preload="none" src="song.mp3"></audio>
+
+<script>
+// PERSONALIZE HERE:
+// 1) Change the anniversary date to "YYYY-MM-DD" when you want the counter.
+// 2) Put your MP3 beside this HTML file and name it "your-song.mp3",
+//    or change the audio src near the bottom of this file.
+// 3) Put your pictures in a folder named "photos" and use the filenames below.\n//    On Page 7, four polaroid-style snapshots surround the virtual flower;
+//    You can add more gallery photos by copying a <figure class="photo"> block.
+const anniversaryDate = ""; // Example: "2025-02-14"
+
+const screens = [...document.querySelectorAll('.screen')];
+function goTo(n){screens.forEach((s,i)=>s.classList.toggle('active',i===n-1));window.scrollTo({top:0,behavior:'smooth'});}
+const passwordInput=document.getElementById('pass');
+document.getElementById('togglePass').onclick=()=>passwordInput.type=passwordInput.type==='password'?'text':'password';
+function enterSite(){
+ const value=passwordInput.value.trim().toLowerCase();
+ if(['baby','darling','honey'].includes(value)){document.getElementById('passMsg').textContent='You got it, pretty girl. ♡';setTimeout(()=>goTo(2),650);}
+ else{document.getElementById('passMsg').textContent='Hmm... try our special callsign, baby. ♡';passwordInput.value='';}
+}
+document.getElementById('enter').onclick=enterSite;
+passwordInput.addEventListener('keydown',e=>{if(e.key==='Enter')enterSite();});
+
+const questions=[
+ 'Do you really love me, baby?',
+ 'Sure? Bawal short term dito ha. 😤',
+ 'Kaya mo ba akong tiisin kahit makulit ako minsan?',
+ 'Promise, you’ll keep choosing me kahit may rough days?',
+ 'Ready ka na bang makita ang little world na ginawa ko for you? ♡'
+];
+const reactions=[
+ 'Good. Dapat lang, baby. I love you more. 😚',
+ 'Better! Long-term commitment only. Walang atrasan. 😌',
+ 'Hehe, noted. I’ll be makulit with love. ♡',
+ 'That’s all I want — ikaw at ako, choosing each other. 💗',
+ 'Then this little surprise is all yours. Welcome, my love! 🌷'
+];
+let qi=0;
+function renderQuestion(){
+ document.getElementById('question').textContent=questions[qi];
+ document.getElementById('progress').innerHTML=questions.map((_,i)=>`<span class="dot ${i<=qi?'on':''}"></span>`).join('');
+ document.getElementById('reaction').textContent='';
+}
+function answer(){document.getElementById('reaction').textContent=reactions[qi];setTimeout(()=>{qi++;if(qi<questions.length)renderQuestion();else goTo(3);},650);}
+document.getElementById('yes1').onclick=answer;document.getElementById('yes2').onclick=answer;renderQuestion();
+
+document.getElementById('envelope').onclick=()=>{document.getElementById('envelope').classList.add('open');document.getElementById('letter').classList.add('show');};
+document.getElementById('p3next').onclick=()=>goTo(4);
+document.getElementById('p4next').onclick=()=>goTo(5);
+document.getElementById('p5next').onclick=()=>goTo(6);
+document.getElementById('p6next').onclick=()=>goTo(7);
+document.getElementById('revisit').onclick=()=>goTo(6);
+
+function openPhoto(src){document.getElementById('modalImg').src=src;document.getElementById('modal').classList.add('show');}
+document.querySelectorAll('.photo img').forEach(img=>img.parentElement.onclick=()=>openPhoto(img.src));
+document.querySelectorAll('.petal, .memory-snap').forEach(p=>p.onclick=()=>openPhoto(p.dataset.photo));
+document.getElementById('closeModal').onclick=()=>document.getElementById('modal').classList.remove('show');
+document.getElementById('modal').onclick=e=>{if(e.target.id==='modal')e.currentTarget.classList.remove('show');};
+
+const audio=document.getElementById('bgMusic'),musicBtn=document.getElementById('musicBtn');
+musicBtn.onclick=async()=>{try{if(audio.paused){await audio.play();musicBtn.textContent='Ⅱ';document.getElementById('musicLabel').textContent='Now playing ♡';}else{audio.pause();musicBtn.textContent='▶';document.getElementById('musicLabel').textContent='Paused';}}catch(e){document.getElementById('musicLabel').textContent='Add your-song.mp3 beside this HTML file';}};
+if(anniversaryDate){
+ const start=new Date(anniversaryDate+'T00:00:00');
+ if(!isNaN(start)){const days=Math.max(0,Math.floor((new Date()-start)/86400000));document.getElementById('together').textContent=days+' days ♡';}
+}
+document.getElementById('surprise').onclick=()=>{
+ const overlay=document.createElement('div');overlay.style.cssText='position:fixed;inset:0;z-index:30;background:#fff8f4ee;display:grid;place-items:center;text-align:center;padding:25px;animation:fade .4s';
+ overlay.innerHTML='<div><div style="font-size:4rem">💗🌷💗</div><h2 style="font-family:Playfair Display,serif;font-size:2.6rem;color:#986d82">You are my favorite.</h2><p style="max-width:390px">If I could give you one thing, it would be the ability to see yourself through my eyes — then you would understand just how lovely you are. I love you, baby. ♡</p><button class="primary" id="closeSurprise">Back to my flower</button></div>';
+ document.body.appendChild(overlay);overlay.querySelector('button').onclick=()=>overlay.remove();
+ for(let i=0;i<28;i++){const h=document.createElement('span');h.textContent=['♡','✿','✨'][i%3];h.className='floaty';h.style.left=Math.random()*100+'%';h.style.animationDuration=(5+Math.random()*5)+'s';h.style.fontSize=(14+Math.random()*20)+'px';overlay.appendChild(h);}
+};
+const ambient=document.getElementById('ambient');
+for(let i=0;i<17;i++){const f=document.createElement('span');f.className='floaty';f.textContent=['♡','✧','✿'][i%3];f.style.left=Math.random()*100+'%';f.style.animationDuration=(12+Math.random()*18)+'s';f.style.animationDelay=(-Math.random()*20)+'s';f.style.fontSize=(12+Math.random()*18)+'px';ambient.appendChild(f);}
+</script>
+</body>
+</html>
